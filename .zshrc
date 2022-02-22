@@ -90,8 +90,12 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+ls_dir() {
+    ls --color=auto;
+}
+
 configure_prompt() {
-    prompt_symbol=㉿
+  prompt_symbol='{}'
     [ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
         twoline)
@@ -258,9 +262,26 @@ fi
 # TODO extract to separate file
 # TODO Add shortcut to cd to: 1. ../ 2. Previous folder
 
-echo "Bingo!"
+function cd_ls() {
+    cd "$@";
+    ls --group-directories-first --color=always | head -30 | tr '\n' '\t';
+}
+
 alias vi='~/prog/nvim/nvim.appimage'
 alias fetch='mv ~/Downloads/* .'
+alias cd='cd_ls'
 
-export BAYAN=~/prog/bayan_bot
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
+function go_up() {
+    echo '';
+	cd ../;
+    echo '\n\n';
+	zle reset-prompt;
+}
+zle -N go_up
+bindkey '^[j' go_up
+
+export JAVA_HOME=/home/administrator/.jdks/openjdk-17.0.2
+export PATH=$PATH:/home/administrator/.jdks/openjdk-17.0.2/bin
+export VISUAL="~/prog/nvim/nvim.appimage"
+export EDITOR="$VISUAL"
+
